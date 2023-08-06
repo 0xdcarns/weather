@@ -8,6 +8,7 @@ interface WeatherCardProps {
 
 const weatherPicSrcs = {
     'snow': 'https://cdn.pixabay.com/photo/2013/10/27/17/14/snowfall-201496_1280.jpg' as string,
+    'fog': 'https://cdn.pixabay.com/photo/2017/07/19/01/40/city-2517650_1280.jpg' as string,
     'shower': 'https://cdn.pixabay.com/photo/2017/03/16/20/20/man-2150164_1280.jpg' as string,
     'cloud': 'https://cdn.pixabay.com/photo/2016/03/27/07/32/clouds-1282314_1280.jpg' as string,
     'sun': 'https://cdn.pixabay.com/photo/2016/01/08/05/24/sunflower-1127174_1280.jpg' as string,
@@ -16,6 +17,9 @@ const weatherPicSrcs = {
 function getImageSource(forecastDesc: string): string {
     if (forecastDesc.includes('snow')) {
         return weatherPicSrcs.snow
+    }
+    if (forecastDesc.includes('fog')) {
+      return weatherPicSrcs.fog
     }
     if (forecastDesc.includes('shower')) {
         return weatherPicSrcs.shower

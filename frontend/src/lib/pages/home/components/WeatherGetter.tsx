@@ -23,12 +23,18 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  Wrap,
+  WrapItem,
+  Grid,
+  GridItem,
+  Center,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ArrowDownIcon } from '@chakra-ui/icons'
 import { AddressInput, WeatherForecast } from '../types/types'
 import WeatherView from './WeatherView'
+import Dillon from './Dillon'
 
 export default function WeatherGetter() {
   const [forecastData, setForecastData] = useState(undefined as WeatherForecast | undefined)
@@ -40,14 +46,53 @@ export default function WeatherGetter() {
   const abbreviatedUSStates: string[] = [
     "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
     "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+    "MA", "MI", "MN", "MS", "MO", "MT", "NC", "NE", "NV", "NH", "NJ",
+    "NM", "NY", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
     "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
   ];
 
+  const autoFillAddresses: AddressInput[] = [
+    {
+      street: "7384 Melrose Ave", 
+      city: "Los Angeles",
+      state: "CA" ,
+      zip: "90046",
+    },
+    {
+      street: "250 King St", 
+      city: "San Francisco",
+      state: "CA" ,
+      zip: "94107",
+    },
+    {
+      street: "890 King St", 
+      city: "Denver",
+      state: "CO" ,
+      zip: "80204",
+    },
+    {
+      street: "47 W 13th St,", 
+      city: "New York",
+      state: "NY" ,
+      zip: "10011",
+    },
+    {
+      street: "121 N. LaSalle Street", 
+      city: "Chicago",
+      state: "IL" ,
+      zip: "60602",
+    },
+    {
+      street: "1925 BRICKELL AVE", 
+      city: "Miami",
+      state: "FL" ,
+      zip: "33129",
+    },
+  ]
+
   function replaceWhitespace(input: string): string {
     // Use the replace() method with a regular expression to replace all white spaces with '+'
-    return input.replace(/\s/g, '+');
+    return input.replace(/\s/g, '+'); // could also URIEncode, but whatever
   }
 
   const {
@@ -93,11 +138,16 @@ export default function WeatherGetter() {
   }
 
   return (
-    <Flex
-      minH={'100vh'}
-      align={'center'}
-      justify={'center'}
-      bg={useColorModeValue('gray.50', 'gray.800')}>
+    <Flex 
+      direction={{ base: 'column', md: 'row' }}
+      justify={{ base: 'space-between', md: 'center' }}
+      align={{ base: 'center', md: 'center' }}
+      wrap="wrap"
+      maxW="1000vh"
+      m="auto"
+      p={4}
+    >
+      <Center>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Modal isOpen={isOpen} onClose={() => { 
             setForecastData(undefined); 
@@ -108,7 +158,19 @@ export default function WeatherGetter() {
           >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Weather Forecast {new Date().toLocaleDateString()} {!!city && !!state ? `${city.toUpperCase()},${state}` : ''}</ModalHeader>
+            <ModalHeader>
+              <Flex
+                justify={{ base: 'space-between', md: 'center' }}
+                align={{ base: 'space-between', md: 'center' }}
+                wrap="wrap"
+                m="auto"
+                p={4}
+              >
+                <Center width={'100%'}><Text fontSize='4xl'>Weather Forecast</Text></Center>
+                <Center width={'100%'}><Text>{!!city && !!state ? `${city.toUpperCase()}, ${state}` : ''}</Text></Center>
+                <Center width={'100%'}><Text>{new Date().toLocaleDateString()}</Text></Center>
+              </Flex>
+            </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <WeatherView Forecastdata={forecastData}/>
@@ -182,7 +244,7 @@ export default function WeatherGetter() {
                   />
                 </InputGroup>
                 <FormErrorMessage>
-                  {!!errors.zip && errors.zip.message}
+                  <>{!!errors.zip && errors.zip.message}</>
                 </FormErrorMessage>
               </FormControl>
               <Stack spacing={10} pt={2}>
@@ -199,10 +261,53 @@ export default function WeatherGetter() {
                   Submit
                 </Button>
               </Stack>
+              <Box
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
+                width='100%'
+                py={8}
+                maxH='100%'
+                rounded={'lg'}
+                bg={useColorModeValue('white', 'gray.700')}
+                boxShadow={'lg'}
+                bgPosition='center'
+                bgRepeat='no-repeat'
+                mb={2}
+              >
+                <Flex
+                  justify={{ base: 'space-between', md: 'center' }}
+                  align={{ base: 'space-between', md: 'center' }}
+                  wrap="wrap"
+                  m="auto"
+                  p={4}
+                >
+                  <Center width={'100%'} marginBottom='4px'>
+                    <Text>Popular Locations</Text>
+                  </Center>
+                  {autoFillAddresses.map(addr => 
+                    <Button 
+                      isLoading={isSubmitting}
+                      loadingText="Fetching"
+                      key={addr.street}
+                      colorScheme='teal'
+                      width={'15vh'}
+                      margin='2px'
+                      onClick={() => onSubmit(addr)}
+                      >
+                      {addr.city}
+                    </Button>)
+                  }
+                </Flex>
+              </Box>
             </Stack>
           </Box>
         </form>
       </Stack>
+      </Center>
+      <Center>
+        <Dillon />
+      </Center>
     </Flex>
   )
 }

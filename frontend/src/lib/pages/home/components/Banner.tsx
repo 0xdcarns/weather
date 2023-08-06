@@ -2,7 +2,11 @@
 
 import { Stack, Flex, Button, Text, VStack, useBreakpointValue } from '@chakra-ui/react'
 
-export default function Banner() {
+interface BannerProps {
+  scrollFunc: () => void
+}
+
+const Banner: React.FC<BannerProps> = ({scrollFunc}) => {
   return (
     <Flex
       w={'full'}
@@ -25,7 +29,7 @@ export default function Banner() {
             lineHeight={1.2}
             fontSize={useBreakpointValue({ base: '3xl', md: '3xl' })}>
             Check the Weather!{<br />}
-            Wherever.{<br />}
+            Wherever. (US only){<br />}
             Whenever.
           </Text>
           <Stack direction={'row'}>
@@ -34,10 +38,7 @@ export default function Banner() {
               rounded={'full'}
               color={'white'}
               _hover={{ bg: 'blue.500' }}
-              onClick={() => {
-                const classLocation = document.querySelector(".weather")
-                window.scrollTo(0, classLocation ? classLocation.scrollTop : 1000);
-              }}
+              onClick={scrollFunc}
               >
               Show me
             </Button>
@@ -47,3 +48,5 @@ export default function Banner() {
     </Flex>
   )
 }
+
+export default Banner;
